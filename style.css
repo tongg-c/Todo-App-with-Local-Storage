@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+:root {
+	--c1: rgb(24, 24, 31);
+	--c2: rgb(33, 33, 42);
+	--c2-accent: rgb(39, 39, 49);
+	--c3: rgb(235, 126, 161);
+	--text-color-1: rgb(238, 238, 239);
+	--text-color-2: rgb(184, 184, 184);
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	background-color: var(--c1);
+}
+
+body {
+	font-family: 'Ubuntu', sans-serif;
+}
+::-webkit-scrollbar {
+	display: none;
+}
+
+.main-container {
+	display: flex;
+}
+
+.project-container {
+	padding: 0.5rem;
+	width: 20vw;
+	background-color: var(--c2);
+	min-height: 100vh;
+	position: fixed;
+	overflow-y: scroll;
+	top: 0;
+	bottom: 0;
+}
+
+.project-container h2 {
+	color: var(--text-color-2);
+	font-size: 1.2rem;
+}
+
+.project-list {
+	font-size: 0.8rem;
+	display: flex;
+	flex-direction: column;
+	margin-top: 5px;
+	margin-bottom: 15px;
+	font-size: 1.5rem;
+}
+
+.project-list li {
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	color: var(--text-color-1);
+}
+
+.project-list p {
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-right: auto;
+}
+
+.add-project-field {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.add-project {
+	font-size: 1rem;
+	color: var(--text-color-1);
+	outline: 0;
+	border: 0;
+	background-color: transparent;
+}
+
+.delete-button {
+	font-size: 23px;
+	margin-left: 7px;
+	transition: transform 0.1s;
+	color: #f48484;
+}
+
+.delete-button:hover {
+	color: #f55050;
+	transform: scale(1.2);
+}
+
+.edit-button {
+	font-size: 19px;
+	transition: transform 0.1s;
+}
+
+.edit-button:hover {
+	transform: scale(1.2);
+}
+
+.edit-input {
+	outline: 0;
+	border: 0;
+	background-color: transparent;
+	color: var(--text-color-1);
+	width: 100%;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 1.5rem;
+}
+
+.confirm-edit {
+	font-size: 15px;
+	color: #86a3b8;
+	transition: transform 0.1s;
+}
+
+.confirm-edit:hover {
+	color: #4184b5;
+	transform: scale(1.2);
+}
+#projectAddField {
+	width: 100%;
+	height: 25px;
+	font-size: 1.2rem;
+	border-radius: 5px;
+	border: 0;
+	padding: 10px 2.5px;
+}
+
+#projectAddField::placeholder {
+	color: gray;
+}
+
+.todos {
+	margin-left: 20vw;
+	width: 100%;
+	min-height: 100vh;
+	background-color: var(--c1);
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	padding: 30px 150px;
+}
+.todos > * {
+	margin: 20px 0;
+}
+
+.todos h2 {
+	color: var(--text-color-1);
+	font-size: 2.5rem;
+}
+
+.add-todo-button-container {
+	color: var(--text-color-2);
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	font-size: 1.2rem;
+	border-radius: 10px;
+	border: 1px solid var(--c2);
+	padding: 10px;
+}
+
+.add-todo-button-container button {
+	background-color: var(--c3);
+	border: 0;
+	border-radius: 40%;
+	width: 37px;
+	height: 37px;
+	font-size: 2rem;
+}
+
+.hidden {
+	display: none;
+}
+
+.add-todo-form {
+	width: 100%;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	color: var(--text-color-2);
+	position: relative;
+}
+
+#addTodoForm div {
+	margin-bottom: 20px;
+}
+
+#addTodoForm label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+#addTodoForm input[type='text'],
+#addTodoForm input[type='date'],
+#addTodoForm select {
+	width: 100%;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+#addTodoForm button[type='submit'] {
+	width: 100%;
+	padding: 10px;
+	background-color: var(--c3);
+	color: white;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#addTodoForm button[type='submit']:hover {
+	background-color: #3e8e41;
+}
+
+.close-add-todo {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	width: 20px;
+	height: 20px;
+}
+.todo-list-items > * {
+	margin: 10px 0;
+}
+
+.todo {
+	display: flex;
+	align-items: center;
+	background-color: var(--c2);
+	border-radius: 10px;
+	color: var(--text-color-2);
+	padding: 10px;
+	font-size: 1.2rem;
+	gap: 10px;
+	position: relative;
+}
+
+.todo-content > * {
+	margin: 4px 0;
+}
+
+.todo.checked :not(i) {
+	text-decoration: line-through;
+	opacity: 70%;
+}
+
+/* .todo::before {
+	position: absolute;
+	content: '';
+	background-color: red;
+	opacity: 50%;
+	height: 2px;
+	width: 85%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+} */
+
+.due-date {
+	color: yellow;
+	font-weight: 300;
+}
+
+.todo:nth-child(2) .due-date {
+	color: green;
+}
+
+.todo-buttons {
+	margin-left: auto;
+}

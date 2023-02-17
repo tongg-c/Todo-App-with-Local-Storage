@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="style.css" />
+		<script src="index.js" defer></script>
+		<script
+			src="https://kit.fontawesome.com/8dfcc69a1b.js"
+			crossorigin="anonymous"
+		></script>
+	</head>
+	<body>
+		<div class="main-container">
+			<div class="project-container">
+				<h2>Projects</h2>
+				<ul class="project-list" id="projectList"></ul>
+				<div class="add-project-field">
+					<input placeholder="Add Project" type="text" id="projectAddField" />
+					<i id="addProjectButton" class="fa-solid fa-plus add-project"></i>
+				</div>
+			</div>
+			<div class="todos">
+				<h2 id="currentProjectTitle"></h2>
+				<div class="add-todo-container">
+					<div id="addTodoButtonContainer" class="add-todo-button-container">
+						<button id="addTodoButton">+</button>
+						<p>Add a Todo</p>
+					</div>
+
+					<form id="addTodoForm" class="add-todo-form hidden" action="">
+						<i class="fa-solid fa-xmark close-add-todo delete-button"></i>
+						<div>
+							<label for="titleInput">Title:</label>
+							<input type="text" id="titleInput" name="title" required />
+						</div>
+						<div>
+							<label for="dueDateInput">Due Date:</label>
+							<input type="date" id="dueDateInput" name="dueDate" />
+						</div>
+						<div>
+							<label for="priorityInput">Priority:</label>
+							<select id="priorityInput" name="priority">
+								<option value="low">Low</option>
+								<option value="medium">Medium</option>
+								<option value="high">High</option>
+							</select>
+						</div>
+						<button type="submit">Add To-Do</button>
+					</form>
+				</div>
+				<ul id="todoListItems" class="todo-list-items">
+					<!-- <div class="todo">
+						<input type="checkbox" name="" id="" />
+						<div class="todo-content">
+							<p class="tood-title">Finish the essay Collaboration</p>
+							<p class="due-date">3 days left</p>
+						</div>
+						<div class="todo-buttons">
+							<i class="fa-solid fa-pencil edit-button"></i>
+							<i class="fa-solid fa-xmark delete-button"></i>
+						</div>
+					</div>
+					<div class="todo">
+						<input type="checkbox" name="" id="" />
+						<div class="todo-content">
+							<p class="todo-title">Finish the essay Collaboration</p>
+							<p class="due-date">10 days left</p>
+						</div>
+						<div class="todo-buttons">
+							<i class="fa-solid fa-pencil edit-button"></i>
+							<i class="fa-solid fa-xmark delete-button"></i>
+						</div>
+					</div> -->
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>
