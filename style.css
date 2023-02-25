@@ -98,14 +98,14 @@ body {
 }
 
 .edit-button {
-	font-size: 19px;
-	transition: transform 0.1s;
+	font-size: 16px;
+	transition: all 0.1s ease;
 }
 
 .edit-button:hover {
 	transform: scale(1.2);
+	will-change: transform;
 }
-
 .edit-input {
 	outline: 0;
 	border: 0;
@@ -117,7 +117,7 @@ body {
 }
 
 .confirm-edit {
-	font-size: 15px;
+	font-size: 19px;
 	color: #86a3b8;
 	transition: transform 0.1s;
 }
@@ -189,19 +189,19 @@ body {
 	position: relative;
 }
 
-#addTodoForm div {
+.add-todo-form div {
 	margin-bottom: 20px;
 }
 
-#addTodoForm label {
+.add-todo-form label {
 	display: block;
 	font-weight: bold;
 	margin-bottom: 10px;
 }
 
-#addTodoForm input[type='text'],
-#addTodoForm input[type='date'],
-#addTodoForm select {
+.add-todo-form input[type='text'],
+.add-todo-form input[type='date'],
+.add-todo-form select {
 	width: 100%;
 	padding: 10px;
 	font-size: 16px;
@@ -209,7 +209,7 @@ body {
 	border-radius: 5px;
 }
 
-#addTodoForm button[type='submit'] {
+.add-todo-form button[type='submit'] {
 	width: 100%;
 	padding: 10px;
 	background-color: var(--c3);
@@ -220,7 +220,7 @@ body {
 	cursor: pointer;
 }
 
-#addTodoForm button[type='submit']:hover {
+.add-todo-form button[type='submit']:hover {
 	background-color: #3e8e41;
 }
 
@@ -231,6 +231,7 @@ body {
 	width: 20px;
 	height: 20px;
 }
+
 .todo-list-items > * {
 	margin: 10px 0;
 }
@@ -241,7 +242,7 @@ body {
 	background-color: var(--c2);
 	border-radius: 10px;
 	color: var(--text-color-2);
-	padding: 10px;
+	padding: 10px 15px;
 	font-size: 1.2rem;
 	gap: 10px;
 	position: relative;
@@ -256,25 +257,33 @@ body {
 	opacity: 70%;
 }
 
-/* .todo::before {
-	position: absolute;
+.todo::before {
 	content: '';
-	background-color: red;
-	opacity: 50%;
-	height: 2px;
-	width: 85%;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-} */
-
-.due-date {
-	color: yellow;
-	font-weight: 300;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 8px;
+	height: 100%;
+	opacity: 70%;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+.todo.checked::before {
+	opacity: 40%;
 }
 
-.todo:nth-child(2) .due-date {
-	color: green;
+.todo.red::before {
+	background-color: red;
+}
+.todo.yellow::before {
+	background-color: yellow;
+}
+.todo.green::before {
+	background-color: green;
+}
+
+.due-date {
+	font-weight: 300;
 }
 
 .todo-buttons {

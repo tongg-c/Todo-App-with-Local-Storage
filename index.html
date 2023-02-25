@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
 		<link rel="stylesheet" href="style.css" />
-		<script src="index.js" defer></script>
+		<script type="module" src="bundle.js"></script>
 		<script
 			src="https://kit.fontawesome.com/8dfcc69a1b.js"
 			crossorigin="anonymous"
@@ -48,33 +48,10 @@
 								<option value="high">High</option>
 							</select>
 						</div>
-						<button type="submit">Add To-Do</button>
+						<button type="submit">Submit</button>
 					</form>
 				</div>
-				<ul id="todoListItems" class="todo-list-items">
-					<!-- <div class="todo">
-						<input type="checkbox" name="" id="" />
-						<div class="todo-content">
-							<p class="tood-title">Finish the essay Collaboration</p>
-							<p class="due-date">3 days left</p>
-						</div>
-						<div class="todo-buttons">
-							<i class="fa-solid fa-pencil edit-button"></i>
-							<i class="fa-solid fa-xmark delete-button"></i>
-						</div>
-					</div>
-					<div class="todo">
-						<input type="checkbox" name="" id="" />
-						<div class="todo-content">
-							<p class="todo-title">Finish the essay Collaboration</p>
-							<p class="due-date">10 days left</p>
-						</div>
-						<div class="todo-buttons">
-							<i class="fa-solid fa-pencil edit-button"></i>
-							<i class="fa-solid fa-xmark delete-button"></i>
-						</div>
-					</div> -->
-				</ul>
+				<ul id="todoListItems" class="todo-list-items"></ul>
 			</div>
 		</div>
 	</body>
