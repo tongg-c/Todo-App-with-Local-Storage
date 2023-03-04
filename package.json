@@ -1,23 +1,30 @@
 {
-	"name": "todo-copy",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tongg-c/Todo-copy.git"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/tongg-c/Todo-copy/issues"
-	},
-	"homepage": "https://github.com/tongg-c/Todo-copy#readme",
-	"dependencies": {
-		"luxon": "^3.2.1"
-	}
+  "name": "todo-copy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix --ext .js,.jsx ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tongg-c/Todo-copy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tongg-c/Todo-copy/issues"
+  },
+  "homepage": "https://github.com/tongg-c/Todo-copy#readme",
+  "dependencies": {
+    "luxon": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
 }
