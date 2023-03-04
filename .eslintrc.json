@@ -9,5 +9,6 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
+  "ignorePatterns": ["bundle.js"],
   "rules": { "no-param-reassign": [2, { "props": false }], "no-alert": "off" }
 }

@@ -13,6 +13,7 @@ const inbox = createProject('Inbox');
 let currentProject = inbox;
 projects.push(inbox);
 
+const projectAddField = document.getElementById('projectAddField');
 const addProjectButton = document.getElementById('addProjectButton');
 
 // Todo elements
@@ -34,24 +35,33 @@ function createTodo(title, dueDate, priority) {
   };
 }
 
-function convertToDateTime(dueDate) {
-  const [month, day, year] = dueDate.split('-').map(Number);
-  return DateTime.local(month, day, year).startOf('day');
-}
-
-function dateUpdater({ dueDate }, dueDateElement) {
-  const now = DateTime.local().startOf('day');
-  if (now > dueDate) dueDateElement.textContent = 'Expired';
-  else if (now < dueDate) dueDateElement.textContent = dueDate;
-  else dueDateElement.textContent = 'Due Today';
-}
-
 function setPriority(todoObject, priority, todoDiv) {
   if (priority === '') return;
   if (priority === 'low') todoDiv.classList.add('green');
   else if (priority === 'medium') todoDiv.classList.add('yellow');
   else todoDiv.classList.add('red');
   todoObject.priority = priority;
+}
+
+function getCurrentDayCalculations() {
+  const now = DateTime.local().startOf('day');
+  const endOfDay = now.endOf('day');
+  const differenceInMinutes = Math.round(
+    endOfDay.diff(now, 'minutes').values.minutes,
+  );
+  return {
+    now,
+    endOfDay,
+    differenceInMinutes,
+  };
+}
+
+function dateUpdater({ dueDate }, dueDateElement) {
+  const currentDateObject = getCurrentDayCalculations();
+  if (currentDateObject.now > dueDate) dueDateElement.textContent = 'Expired';
+  else if (currentDateObject.now < dueDate)
+    dueDateElement.textContent = `Due on ${dueDate.toLocaleString()}`;
+  else dueDateElement.textContent = 'Due Today';
 }
 
 function createTodoDiv(todoObject, indexOfTodo) {
@@ -74,7 +84,9 @@ function createTodoDiv(todoObject, indexOfTodo) {
     const dueDateElement = document.createElement('p');
     dueDateElement.classList.add('due-date');
     dateUpdater(todoObject, dueDateElement);
-    // setInterval(() => updateRemainingDays(todoObject, dueDate), 1000) // Update every second
+    setInterval(() => {
+      dateUpdater(todoObject, dueDateElement);
+    }, 60000 * getCurrentDayCalculations().differenceInMinutes);
 
     todoContent.appendChild(dueDateElement);
   }
@@ -94,6 +106,7 @@ function createTodoDiv(todoObject, indexOfTodo) {
   todoButtons.appendChild(deleteButton);
 
   editButton.addEventListener('click', () => {
+    // eslint-disable-next-line no-use-before-define
     editTodo(todoObject, todoDiv);
     titleInput.focus();
   });
@@ -119,15 +132,31 @@ function createTodoDiv(todoObject, indexOfTodo) {
   return todoDiv;
 }
 
+function renderTodos(currentProjectValue) {
+  todoListItems.innerHTML = '';
+  document.getElementById('currentProjectTitle').textContent =
+    currentProjectValue.name;
+  currentProjectValue.todos.forEach((todoObject, indexOfTodo) => {
+    todoListItems.append(createTodoDiv(todoObject, indexOfTodo));
+  });
+}
+
+function convertToDateTime(dueDate) {
+  const [month, day, year] = dueDate.split('-').map(Number);
+  return DateTime.local(month, day, year).startOf('day');
+}
+
 function formSubmit(e) {
   e.preventDefault();
 
   addTodoButtonContainer.classList.toggle('hidden');
   addTodoForm.classList.toggle('hidden');
 
-  const title = addTodoForm.elements.title.value;
-
-  const dueDate = convertToDateTime(addTodoForm.elements.dueDate.value);
+  const title = addTodoForm.elements.title.value.trim();
+  const dueDate =
+    addTodoForm.elements.dueDate.value === ''
+      ? ''
+      : convertToDateTime(addTodoForm.elements.dueDate.value);
 
   const priority = addTodoForm.elements.priority.value;
 
@@ -141,22 +170,16 @@ function formSubmit(e) {
 }
 addTodoForm.addEventListener('submit', formSubmit);
 
-function renderTodos(currentProjectValue) {
-  todoListItems.innerHTML = '';
-  document.getElementById('currentProjectTitle').textContent =
-    currentProjectValue.name;
-  currentProjectValue.todos.forEach((todoObject, indexOfTodo) => {
-    todoListItems.append(createTodoDiv(todoObject, indexOfTodo));
-  });
-}
-
 function editTodo(todoObject, todoDiv) {
   addTodoButtonContainer.classList.add('hidden');
   addTodoForm.classList.remove('hidden');
 
   // pre-fill form fields with existing todo values
   addTodoForm.elements.title.value = todoObject.title;
-  addTodoForm.elements.dueDate.value = todoObject.dueDate.toISO().substr(0, 10);
+  if (todoObject.dueDate !== '')
+    addTodoForm.elements.dueDate.value = todoObject.dueDate
+      .toISO()
+      .substr(0, 10);
   addTodoForm.elements.priority.value = todoObject.priority;
 
   // change form submission event listener to handle updating todos
@@ -166,7 +189,7 @@ function editTodo(todoObject, todoDiv) {
     e => {
       e.preventDefault();
 
-      const newTitle = addTodoForm.elements.title.value;
+      const newTitle = addTodoForm.elements.title.value.trim();
       const newDueDate = convertToDateTime(addTodoForm.elements.dueDate.value);
       const newPriority = addTodoForm.elements.priority.value;
 
@@ -279,14 +302,18 @@ function renderProjects() {
     projectList.append(projectElements);
   });
 }
+
 addProjectButton.addEventListener('click', () => {
-  const projectAddField = document.getElementById('projectAddField');
   const inputValue = projectAddField.value;
   if (inputValue === '') return;
   const newProject = createProject(inputValue);
   projects.push(newProject);
   renderProjects();
   projectAddField.value = '';
+});
+
+projectAddField.addEventListener('keyup', e => {
+  if (e.key === 'Enter') addProjectButton.click();
 });
 
 addTodoButton.addEventListener('click', () => {
@@ -297,6 +324,7 @@ addTodoButton.addEventListener('click', () => {
 addTodoFormClose.addEventListener('click', () => {
   addTodoButtonContainer.classList.toggle('hidden');
   addTodoForm.classList.toggle('hidden');
+  addTodoForm.reset();
 });
 
 renderTodos(inbox);
