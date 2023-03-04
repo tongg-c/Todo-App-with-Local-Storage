@@ -13,6 +13,7 @@ const inbox = createProject('Inbox');
 let currentProject = inbox;
 projects.push(inbox);
 
+// Project Elements
 const projectAddField = document.getElementById('projectAddField');
 const addProjectButton = document.getElementById('addProjectButton');
 
@@ -145,6 +146,15 @@ function convertToDateTime(dueDate) {
   const [month, day, year] = dueDate.split('-').map(Number);
   return DateTime.local(month, day, year).startOf('day');
 }
+
+const saveToLocalStorage = () => {
+  localStorage.setItem('projects', JSON.stringify(projects));
+  localStorage.setItem('projects', JSON.stringify(inbox));
+};
+const retrieveFromLocalStorage = () => ({
+  projects: JSON.parse(localStorage.getItem('projects')),
+  inbox: JSON.parse(localStorage.getItem('inbox')),
+});
 
 function formSubmit(e) {
   e.preventDefault();

@@ -14,6 +14,7 @@ const inbox = createProject('Inbox');
 let currentProject = inbox;
 projects.push(inbox);
 
+// Project Elements
 const projectAddField = document.getElementById('projectAddField');
 const addProjectButton = document.getElementById('addProjectButton');
 
