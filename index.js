@@ -1,7 +1,5 @@
 const { DateTime } = require('luxon');
 
-const projects = [];
-
 function createProject(name) {
   return {
     name,
@@ -9,9 +7,37 @@ function createProject(name) {
   };
 }
 
-const inbox = createProject('Inbox');
-let currentProject = inbox;
-projects.push(inbox);
+const retrieveFromLocalStorage = () => {
+  const projectFromLocalStorage = localStorage.getItem('projects');
+  if (
+    projectFromLocalStorage === null ||
+    projectFromLocalStorage === undefined
+  ) {
+    return [];
+  }
+
+  return JSON.parse(localStorage.getItem('projects'));
+};
+
+const projects = retrieveFromLocalStorage();
+let indexOfCurrentProject =
+  localStorage.getItem('indexOfCurrentProject') === 'undefined' ||
+  localStorage.getItem('indexOfCurrentProject') === 'null' ||
+  projects.length === 1
+    ? 0
+    : localStorage.getItem('indexOfCurrentProject');
+const saveToLocalStorage = () => {
+  localStorage.setItem('projects', JSON.stringify(projects));
+  localStorage.setItem('indexOfCurrentProject', indexOfCurrentProject);
+};
+
+if (projects.length === 0) {
+  projects.push(createProject('Inbox'));
+}
+
+saveToLocalStorage();
+
+let currentProject = projects[indexOfCurrentProject];
 
 // Project Elements
 const projectAddField = document.getElementById('projectAddField');
@@ -38,9 +64,10 @@ function createTodo(title, dueDate, priority) {
 
 function setPriority(todoObject, priority, todoDiv) {
   if (priority === '') return;
+
   if (priority === 'low') todoDiv.classList.add('green');
   else if (priority === 'medium') todoDiv.classList.add('yellow');
-  else todoDiv.classList.add('red');
+  else if (priority === 'high') todoDiv.classList.add('red');
   todoObject.priority = priority;
 }
 
@@ -63,6 +90,19 @@ function dateUpdater({ dueDate }, dueDateElement) {
   else if (currentDateObject.now < dueDate)
     dueDateElement.textContent = `Due on ${dueDate.toLocaleString()}`;
   else dueDateElement.textContent = 'Due Today';
+}
+
+function renderProjects() {
+  const projectList = document.getElementById('projectList');
+  projectList.innerHTML = '';
+
+  // Iterate through projects and create elements
+
+  retrieveFromLocalStorage().forEach((projectObject, i) => {
+    // eslint-disable-next-line no-use-before-define
+    const projectElements = createProjectElements(projectObject, i);
+    projectList.append(projectElements);
+  });
 }
 
 function createTodoDiv(todoObject, indexOfTodo) {
@@ -108,14 +148,23 @@ function createTodoDiv(todoObject, indexOfTodo) {
 
   editButton.addEventListener('click', () => {
     // eslint-disable-next-line no-use-before-define
-    editTodo(todoObject, todoDiv);
+    editTodo(todoObject, todoDiv, indexOfTodo);
+    saveToLocalStorage();
+    renderProjects();
     titleInput.focus();
   });
 
   deleteButton.addEventListener('click', () => {
     currentProject.todos.splice(indexOfTodo, 1);
+    saveToLocalStorage();
+    renderProjects();
     todoDiv.remove();
   });
+  if (todoObject.complete) {
+    todoDiv.classList.toggle('checked');
+    checkbox.classList.remove('fa-circle');
+    checkbox.classList.add('fa-circle-check');
+  }
 
   checkbox.addEventListener('click', () => {
     todoObject.complete = !todoObject.complete;
@@ -128,6 +177,8 @@ function createTodoDiv(todoObject, indexOfTodo) {
       checkbox.classList.add('fa-circle');
     }
     todoDiv.classList.toggle('checked');
+    saveToLocalStorage();
+    renderProjects();
   });
 
   return todoDiv;
@@ -147,17 +198,9 @@ function convertToDateTime(dueDate) {
   return DateTime.local(month, day, year).startOf('day');
 }
 
-const saveToLocalStorage = () => {
-  localStorage.setItem('projects', JSON.stringify(projects));
-  localStorage.setItem('projects', JSON.stringify(inbox));
-};
-const retrieveFromLocalStorage = () => ({
-  projects: JSON.parse(localStorage.getItem('projects')),
-  inbox: JSON.parse(localStorage.getItem('inbox')),
-});
-
 function formSubmit(e) {
   e.preventDefault();
+  if (addTodoForm.elements.title.value === '') return;
 
   addTodoButtonContainer.classList.toggle('hidden');
   addTodoForm.classList.toggle('hidden');
@@ -173,6 +216,9 @@ function formSubmit(e) {
   const todo = createTodo(title, dueDate, priority);
   currentProject.todos.push(todo);
 
+  saveToLocalStorage();
+  renderProjects();
+
   const indexOfTodo = currentProject.todos.length - 1;
   todoListItems.append(createTodoDiv(todo, indexOfTodo));
 
@@ -180,17 +226,20 @@ function formSubmit(e) {
 }
 addTodoForm.addEventListener('submit', formSubmit);
 
-function editTodo(todoObject, todoDiv) {
+function editTodo(todoObject, todoDiv, indexOfTodo) {
   addTodoButtonContainer.classList.add('hidden');
   addTodoForm.classList.remove('hidden');
 
   // pre-fill form fields with existing todo values
-  addTodoForm.elements.title.value = todoObject.title;
-  if (todoObject.dueDate !== '')
-    addTodoForm.elements.dueDate.value = todoObject.dueDate
-      .toISO()
-      .substr(0, 10);
-  addTodoForm.elements.priority.value = todoObject.priority;
+  addTodoForm.elements.title.value = currentProject.todos[indexOfTodo].title;
+  if (currentProject.todos[indexOfTodo].dueDate !== '') {
+    const dt = DateTime.fromISO(currentProject.todos[indexOfTodo].dueDate);
+    const formatted = dt.toFormat('yyyy-MM-dd');
+    addTodoForm.elements.dueDate.value = formatted;
+  }
+
+  addTodoForm.elements.priority.value =
+    currentProject.todos[indexOfTodo].priority;
 
   // change form submission event listener to handle updating todos
   addTodoForm.removeEventListener('submit', formSubmit);
@@ -200,13 +249,19 @@ function editTodo(todoObject, todoDiv) {
       e.preventDefault();
 
       const newTitle = addTodoForm.elements.title.value.trim();
-      const newDueDate = convertToDateTime(addTodoForm.elements.dueDate.value);
+      const newDueDate =
+        addTodoForm.elements.dueDate.value === ''
+          ? ''
+          : convertToDateTime(addTodoForm.elements.dueDate.value);
       const newPriority = addTodoForm.elements.priority.value;
 
       // update todo values
-      todoObject.title = newTitle;
-      todoObject.dueDate = newDueDate;
-      setPriority(todoObject, newPriority, todoDiv);
+      currentProject.todos[indexOfTodo].title = newTitle;
+      // if (currentProject.todos[indexOfTodo].dueDate !== '')
+      currentProject.todos[indexOfTodo].dueDate = newDueDate;
+      setPriority(currentProject.todos[indexOfTodo], newPriority, todoDiv);
+      saveToLocalStorage();
+      renderProjects();
 
       // reset form and hide it
       addTodoForm.reset();
@@ -227,8 +282,7 @@ function createProjectElements(projectObject, i) {
   const projectLi = document.createElement('li');
   const p = document.createElement('p');
   p.textContent = projectObject.name;
-
-  if (projectObject !== inbox) {
+  if (projects[i] !== projects[0]) {
     const deleteButton = document.createElement('i');
     deleteButton.classList.add('fa-solid', 'fa-xmark', 'delete-button');
     const editButton = document.createElement('i');
@@ -242,8 +296,11 @@ function createProjectElements(projectObject, i) {
     // Handle click event for delete button
     deleteButton.addEventListener('click', e => {
       e.stopPropagation();
-      if (currentProject === projectObject) renderTodos(inbox);
+      if (currentProject === projectObject)
+        renderTodos(retrieveFromLocalStorage()[0]);
       projects.splice(i, 1);
+      saveToLocalStorage();
+      renderProjects();
       projectLi.remove();
     });
 
@@ -270,6 +327,8 @@ function createProjectElements(projectObject, i) {
         editButton.className = '';
         editButton.classList.add('fa-solid', 'fa-pencil', 'edit-button');
         projectObject.name = editInput.value;
+        saveToLocalStorage();
+        renderProjects();
         p.textContent = projectObject.name;
         editInput.replaceWith(p);
       }
@@ -287,7 +346,8 @@ function createProjectElements(projectObject, i) {
       }
     });
   }
-  if (projectObject === inbox) {
+
+  if (projects[i] === projects[0]) {
     const img = document.createElement('img');
     img.src = 'svgs/inbox.svg';
     projectLi.append(img, p);
@@ -295,22 +355,13 @@ function createProjectElements(projectObject, i) {
 
   // Handle click event for projectLi
   projectLi.addEventListener('click', () => {
-    currentProject = projectObject;
+    currentProject = projects[i];
+    indexOfCurrentProject = i;
+    saveToLocalStorage();
     renderTodos(currentProject);
   });
 
   return projectLi;
-}
-
-function renderProjects() {
-  const projectList = document.getElementById('projectList');
-  projectList.innerHTML = '';
-
-  // Iterate through projects and create elements
-  projects.forEach((projectObject, i) => {
-    const projectElements = createProjectElements(projectObject, i);
-    projectList.append(projectElements);
-  });
 }
 
 addProjectButton.addEventListener('click', () => {
@@ -318,6 +369,7 @@ addProjectButton.addEventListener('click', () => {
   if (inputValue === '') return;
   const newProject = createProject(inputValue);
   projects.push(newProject);
+  saveToLocalStorage();
   renderProjects();
   projectAddField.value = '';
 });
@@ -337,5 +389,5 @@ addTodoFormClose.addEventListener('click', () => {
   addTodoForm.reset();
 });
 
-renderTodos(inbox);
+renderTodos(currentProject);
 renderProjects();

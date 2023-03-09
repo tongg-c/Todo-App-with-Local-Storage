@@ -63,6 +63,10 @@ body {
   color: var(--text-color-1);
 }
 
+.project-list li:hover {
+  cursor: pointer;
+}
+
 .project-list p {
   width: 100%;
   overflow: hidden;
@@ -83,6 +87,9 @@ body {
   outline: 0;
   border: 0;
   background-color: transparent;
+}
+.add-project {
+  cursor: pointer;
 }
 
 .delete-button {
@@ -178,6 +185,9 @@ body {
   height: 37px;
   font-size: 2rem;
 }
+.add-todo-button-container button {
+  cursor: pointer;
+}
 
 .hidden {
   display: none;
@@ -224,7 +234,7 @@ body {
 }
 
 .add-todo-form button[type='submit']:hover {
-  background-color: #3e8e41;
+  background-color: rgba(235, 126, 161, 0.8);
 }
 
 .close-add-todo {
