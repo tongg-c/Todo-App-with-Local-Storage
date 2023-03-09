@@ -327,7 +327,7 @@ function createProjectElements(projectObject, i) {
         }
         editButton.className = '';
         editButton.classList.add('fa-solid', 'fa-pencil', 'edit-button');
-        projectObject.name = editInput.value;
+        currentProject.name = editInput.value;
         saveToLocalStorage();
         renderProjects();
         p.textContent = projectObject.name;
